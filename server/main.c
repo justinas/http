@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
         if (client_fd < 0) {
             efatal("accept");
         }
-        char *msg = "HTTP/1.0 200 OK\r\n\r\n";
+        char *msg = "HTTP/1.0 200 OK\r\nContent-Length: 1\r\n\r\ni";
         write(client_fd, msg, strlen(msg));
         close(client_fd);
     }
