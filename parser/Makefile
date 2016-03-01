@@ -4,7 +4,7 @@ libparser.a: parser.o
 	ar -rc $@ $<
 
 test-bin: libparser.a main.c
-	gcc -o $@ -L. -lparser main.c
+	gcc $(CFLAGS) -o $@ -L. -lparser main.c
 
 test: test-bin
 	./test-bin

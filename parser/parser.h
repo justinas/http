@@ -4,6 +4,7 @@
 #define PARSER_H
 
 #define PARSER_BUF_SIZE 8192
+#define REQUEST_PATH_SIZE 256
 
 typedef enum http_method {
     Nil,
@@ -12,7 +13,7 @@ typedef enum http_method {
 
 typedef struct http_request {
     http_method method;
-    char *path; // NUL-terminated
+    char path[REQUEST_PATH_SIZE]; // NUL-terminated
 } http_request;
 
 http_request* request_new();
@@ -21,6 +22,7 @@ void request_destroy(http_request* req);
 typedef enum parser_state {
     Init,
     AfterMethod,
+    AfterPath,
 } parser_state;
 
 typedef struct parser {

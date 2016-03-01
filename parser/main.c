@@ -17,12 +17,32 @@ void test_rotate_buf() {
 }
 
 void test_parser_feed() {
-    char *req_str = "GET /";
-    parser *p = parser_new();
-    parser_feed(p, req_str, strlen(req_str));
-    assert(p->buf_len == 5);
-    assert(memcmp(req_str, p->buf, 5) == 0);
-    parser_destroy(p);
+    // Test method parsing
+    {
+        char *req_str = "GET ";
+        parser *p = parser_new();
+        assert(parser_feed(p, req_str, strlen(req_str)) == 0);
+        assert(p->req->method == Get);
+        parser_destroy(p);
+    }
+
+    {
+        char *req_str = "POST ";
+        parser *p = parser_new();
+        assert(parser_feed(p, req_str, strlen(req_str)) == -1);
+        assert(p->req->method == Nil);
+        parser_destroy(p);
+    }
+
+    // Test path parsing
+    {
+        char *req_str = "GET /really/long/path/with/slashes ";
+        parser *p = parser_new();
+        assert(parser_feed(p, req_str, strlen(req_str)) == 1);
+        assert(p->req->method == Get);
+        assert(strcmp(p->req->path, "/really/long/path/with/slashes") == 0);
+        parser_destroy(p);
+    }
 }
 
 int main() {
