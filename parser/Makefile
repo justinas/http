@@ -12,3 +12,4 @@ test: test-bin
 clean:
 	rm -f *.o
 	rm -f libparser.a
+	rm -f test-bin
