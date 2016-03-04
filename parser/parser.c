@@ -19,14 +19,14 @@ http_request* request_new() {
 }
 
 void request_destroy(http_request* req) {
-    free(req);
-
     http_header *h = req->header;
     while (h != NULL) {
         http_header *tmp = h;
         h = tmp->next;
         free(tmp);
     }
+
+    free(req);
 }
 
 parser* parser_new() {
@@ -169,6 +169,7 @@ int parser_parse_step(parser *p) {
                     break;
                 }
             case End:
+                *current_header = NULL;
                 return 1;
             default:
                 abort();
