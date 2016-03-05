@@ -43,6 +43,7 @@ typedef struct parser {
     char buf[PARSER_BUF_SIZE];
     size_t buf_len;
     http_request *req;
+    http_header **current_header;
 } parser;
 
 parser* parser_new();

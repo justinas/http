@@ -34,6 +34,7 @@ parser* parser_new() {
     instance->state = Init;
     instance->buf_len = 0;
     instance->req = request_new();
+    instance->current_header = &instance->req->header;
 
     return instance;
 }
@@ -56,7 +57,6 @@ int parser_feed(parser *p, char *buf, size_t n) {
 
 // Return values match the ones documented for parser_feed()
 int parser_parse_step(parser *p) {
-    http_header **current_header = &p->req->header;
     char header_name[REQUEST_HEADER_COMPONENT_SIZE];
     for (;;) {
         switch (p->state) {
@@ -122,7 +122,7 @@ int parser_parse_step(parser *p) {
 
                     char *end_of_name;
                     end_of_name = memchr(p->buf, ':', p->buf_len);
-                    if (end_of_name == NULL) {
+                    if (end_of_name == NULL || end_of_name+1 >= p->buf + p->buf_len) {
                         return 0;
                     }
                     if (*(end_of_name+1) != ' ') {
@@ -158,18 +158,18 @@ int parser_parse_step(parser *p) {
                     if (len > REQUEST_HEADER_COMPONENT_SIZE-1) {
                         return -1;
                     }
-                    *current_header = malloc(sizeof(http_header));
-                    strcpy((*current_header)->name, header_name);
-                    memcpy((*current_header)->value, p->buf, len);
-                    (*current_header)->value[len] = '\0';
-                    current_header = &(*current_header)->next;
+                    *p->current_header = malloc(sizeof(http_header));
+                    strcpy((*p->current_header)->name, header_name);
+                    memcpy((*p->current_header)->value, p->buf, len);
+                    (*p->current_header)->value[len] = '\0';
+                    p->current_header = &(*p->current_header)->next;
 
                     parser_rotate_buf(p, len+2);
                     p->state = MaybeHeaderName;
                     break;
                 }
             case End:
-                *current_header = NULL;
+                p->current_header = NULL;
                 return 1;
             default:
                 abort();

@@ -105,9 +105,12 @@ void test_parser_feed() {
             "Connection: keep-alive\r\n"
             "\r\n";
         parser *p = parser_new();
-        assert(parser_feed(p, req_str, strlen(req_str)) == 1);
-        parser_destroy(p);
+        assert(parser_feed(p, req_str, 128) == 0);
+        assert(parser_feed(p, req_str+128, strlen(req_str+128)) == 1);
 
+        http_request *req = parser_request(p);
+        http_header *h = req->header;
+        parser_destroy(p);
     }
 }
 

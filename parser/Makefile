@@ -1,4 +1,4 @@
-CFLAGS = -g -std=c99 -Wall
+CFLAGS = -g -O0 -std=c99 -Wall
 
 libparser.a: parser.o
 	ar -rc $@ $<
