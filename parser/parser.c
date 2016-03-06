@@ -169,7 +169,7 @@ int parser_parse_step(parser *p) {
                     break;
                 }
             case End:
-                p->current_header = NULL;
+                *p->current_header = NULL;
                 return 1;
             default:
                 abort();
