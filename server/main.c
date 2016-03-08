@@ -2,6 +2,7 @@
 #include <netinet/in.h> // OS X
 #endif
 
+#include <arpa/inet.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,6 +34,7 @@ int make_server_socket(uint16_t port) {
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(port);
+    inet_aton("0.0.0.0", &server_addr.sin_addr);
 
     int fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd < 0) {
