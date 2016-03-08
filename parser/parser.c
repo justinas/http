@@ -57,7 +57,6 @@ int parser_feed(parser *p, char *buf, size_t n) {
 
 // Return values match the ones documented for parser_feed()
 int parser_parse_step(parser *p) {
-    char header_name[REQUEST_HEADER_COMPONENT_SIZE];
     for (;;) {
         switch (p->state) {
             case Init:
@@ -132,8 +131,10 @@ int parser_parse_step(parser *p) {
                     if (len > REQUEST_HEADER_COMPONENT_SIZE-1) {
                         return -1;
                     }
-                    memcpy(header_name, p->buf, len);
-                    header_name[len] = '\0';
+                    *p->current_header = malloc(sizeof(http_header));
+                    memcpy((*p->current_header)->name, p->buf, len);
+                    (*p->current_header)->name[len] = '\0';
+
                     parser_rotate_buf(p, len+2);
                     p->state = HeaderValue;
                 }
@@ -158,8 +159,6 @@ int parser_parse_step(parser *p) {
                     if (len > REQUEST_HEADER_COMPONENT_SIZE-1) {
                         return -1;
                     }
-                    *p->current_header = malloc(sizeof(http_header));
-                    strcpy((*p->current_header)->name, header_name);
                     memcpy((*p->current_header)->value, p->buf, len);
                     (*p->current_header)->value[len] = '\0';
                     p->current_header = &(*p->current_header)->next;
