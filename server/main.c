@@ -50,7 +50,7 @@ int make_server_socket(uint16_t port) {
     if (bind(fd, (struct sockaddr*) &server_addr, sizeof(struct sockaddr)) < 0) {
         efatal("bind");
     }
-    if (listen(fd, 5) < 0) {
+    if (listen(fd, 100) < 0) {
         efatal("listen");
     }
 
