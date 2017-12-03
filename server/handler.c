@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
@@ -71,6 +72,8 @@ bytebuf* handler(client* cl) {
         bytebuf_append_str(response, "</table>");
     }
     else {
+        assert(path[0] == '/');
+        path++;
         FILE *f = fopen(path, "r");
         if (!f) {
             bytebuf_append_str(response, strerror(errno));

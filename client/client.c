@@ -33,13 +33,12 @@ ssize_t sendall(int fd, const char *buf, size_t n) {
 void request(int sock, char* path) {
     char reqbuf[2048];
     char *req = "GET %s HTTP/1.0\r\n"
-        "User-Agent: Client 0.1\r\n"
-        "\r\n\r\n";
+        "User-Agent: Client 0.1\r\n\r\n";
     if (snprintf(reqbuf, sizeof reqbuf, req, path) < 1) {
         efatal("snprintf");
     }
     puts(reqbuf);
-    if (sendall(sock, reqbuf, strlen(req)) < 0) {
+    if (sendall(sock, reqbuf, strlen(reqbuf)) < 0) {
         efatal("sendall");
     } 
 

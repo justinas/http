@@ -112,6 +112,8 @@ int parser_parse_step(parser *p) {
                 }
             case MaybeHeaderName:
                 {
+                    if (p->buf_len < 2) return 0;
+
                     if (p->buf_len >= 2 &&
                             p->buf[0] == '\r' &&
                             p->buf[1] == '\n') {
@@ -190,4 +192,5 @@ void parser_rotate_buf(parser *p, size_t offset) {
         p->buf[i] = p->buf[i+offset];
     }
     p->buf_len -= offset;
+    p->buf[p->buf_len] = '\0';
 }

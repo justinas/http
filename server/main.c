@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
 
             // Reading the request
             if (FD_ISSET(fd, &readfds) && clients[i].parser_status != 1) {
-                char buf[256];
+                char buf[256] = {0};
                 ssize_t n = recv(fd, buf, 256, 0);
                 if (n == -1) {
                     efatal("recv");
