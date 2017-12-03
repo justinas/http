@@ -1,3 +1,4 @@
+#define __USE_XOPEN2K // idk
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,11 +30,16 @@ ssize_t sendall(int fd, const char *buf, size_t n) {
     return n - (buf_end - buf);
 }
 
-void request(int sock) {
-    char *req = "GET / HTTP/1.0\r\n"
+void request(int sock, char* path) {
+    char reqbuf[2048];
+    char *req = "GET %s HTTP/1.0\r\n"
         "User-Agent: Client 0.1\r\n"
         "\r\n\r\n";
-    if (sendall(sock, req, strlen(req)) < 0) {
+    if (snprintf(reqbuf, sizeof reqbuf, req, path) < 1) {
+        efatal("snprintf");
+    }
+    puts(reqbuf);
+    if (sendall(sock, reqbuf, strlen(req)) < 0) {
         efatal("sendall");
     } 
 
@@ -75,7 +81,8 @@ int main(int argc, char **argv) {
         strncpy(host, host_start, MIN(host_end - host_start, 255));
     }
     char port_str[] = {'8', '0', '\0', '\0', '\0', '\0'};
-    char *port_end;
+    char *port_start = host_end;
+    char *port_end = port_start;
     if (*host_end == ':') {
         char *port_start = host_end + 1;
         port_end = port_start;
@@ -89,6 +96,8 @@ int main(int argc, char **argv) {
         }
         strncpy(port_str, port_start, port_len);
     }
+
+    char *path_start = port_end;
 
     struct addrinfo hints = {
         .ai_family = AF_INET,
@@ -113,7 +122,7 @@ int main(int argc, char **argv) {
         efatal("connect");
     }
 
-    request(sock);
+    request(sock, path_start);
 
     freeaddrinfo(addr);
     return 0;

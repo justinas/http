@@ -1,4 +1,4 @@
-CFLAGS = -g -O0 -std=c99 -Wall
+CFLAGS = -g -O0 -std=gnu99 -Wall
 
 all: client
 
