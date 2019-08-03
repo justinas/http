@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
         fatal("Invalid URL supplied.");
     }
 
-    char host[256];
+    char host[256] = {0};
     char *host_end = NULL;
     {
         char *host_start = argv[1]+7;
