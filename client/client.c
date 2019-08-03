@@ -19,7 +19,7 @@ void efatal(const char *prepend) {
 }
 
 ssize_t sendall(int fd, const char *buf, size_t n) {
-    const char *buf_end = buf+n;
+    const char *buf_end = buf + n;
     while (buf < buf_end) {
         ssize_t sent = send(fd, buf, MIN(n, 4096), 0);
         if (sent < 0) {
@@ -30,32 +30,31 @@ ssize_t sendall(int fd, const char *buf, size_t n) {
     return n - (buf_end - buf);
 }
 
-void request(int sock, char* path) {
+void request(int sock, char *path) {
     char reqbuf[2048];
     char *req = "GET %s HTTP/1.0\r\n"
-        "User-Agent: Client 0.1\r\n\r\n";
+                "User-Agent: Client 0.1\r\n\r\n";
     if (snprintf(reqbuf, sizeof reqbuf, req, path) < 1) {
         efatal("snprintf");
     }
     puts(reqbuf);
     if (sendall(sock, reqbuf, strlen(reqbuf)) < 0) {
         efatal("sendall");
-    } 
+    }
 
     for (;;) {
         char buf[128];
         ssize_t n = recv(sock, buf, 128, 0);
         switch (n) {
-            case -1:
-                efatal("recv");
-            case 0:
-                return;
-            default:
-                fwrite(buf, n, 1, stdout);
+        case -1:
+            efatal("recv");
+        case 0:
+            return;
+        default:
+            fwrite(buf, n, 1, stdout);
         }
     }
 }
-
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -69,7 +68,7 @@ int main(int argc, char **argv) {
     char host[256] = {0};
     char *host_end = NULL;
     {
-        char *host_start = argv[1]+7;
+        char *host_start = argv[1] + 7;
         host_end = host_start;
         while (*host_end) {
             if (*host_end == '/' || *host_end == ':') {

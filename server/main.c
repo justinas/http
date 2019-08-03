@@ -47,7 +47,8 @@ int make_server_socket(uint16_t port) {
     if (fcntl(fd, F_SETFL, O_NONBLOCK, 1) == -1) {
         efatal("fcntl");
     }
-    if (bind(fd, (struct sockaddr*) &server_addr, sizeof(struct sockaddr)) < 0) {
+    if (bind(fd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) <
+        0) {
         efatal("bind");
     }
     if (listen(fd, 100) < 0) {
@@ -76,7 +77,8 @@ int main(int argc, char **argv) {
 
         if (clients_len == MAX_CLIENTS) {
             fputs("MAX_CLIENTS reached, not accepting another one"
-                    " until someone disconnects.\n", stderr);
+                  " until someone disconnects.\n",
+                  stderr);
         } else {
             FD_SET(server_fd, &readfds);
         }
@@ -89,7 +91,7 @@ int main(int argc, char **argv) {
             }
         }
 
-        if (select(max_fd+1, &readfds, &writefds, NULL, NULL) == -1) {
+        if (select(max_fd + 1, &readfds, &writefds, NULL, NULL) == -1) {
             efatal("select");
         }
 
@@ -122,8 +124,8 @@ int main(int argc, char **argv) {
                 if (n == 0) {
                     parser_destroy(clients[i].parser);
                     memset(&clients[i], 0, sizeof(client));
-                    for (size_t j = i; j < clients_len-1; j++) {
-                        clients[j] = clients[j+1];
+                    for (size_t j = i; j < clients_len - 1; j++) {
+                        clients[j] = clients[j + 1];
                     }
                     clients_len--;
                     continue;
@@ -138,8 +140,8 @@ int main(int argc, char **argv) {
                 } else if (status == -1) {
                     parser_destroy(clients[i].parser);
                     memset(&clients[i], 0, sizeof(client));
-                    for (size_t j = i; j < clients_len-1; j++) {
-                        clients[j] = clients[j+1];
+                    for (size_t j = i; j < clients_len - 1; j++) {
+                        clients[j] = clients[j + 1];
                     }
                     clients_len--;
                     continue;
@@ -152,8 +154,8 @@ int main(int argc, char **argv) {
                 if (c->resp_bytes_written == c->response->len) {
                     bytebuf_destroy(c->response);
                     memset(c, 0, sizeof(client));
-                    for (size_t j = i; j < clients_len-1; j++) {
-                        clients[j] = clients[j+1];
+                    for (size_t j = i; j < clients_len - 1; j++) {
+                        clients[j] = clients[j + 1];
                     }
                     clients_len--;
                     close(fd);
@@ -161,7 +163,8 @@ int main(int argc, char **argv) {
                 }
 
                 char *buf_start = c->response->data + c->resp_bytes_written;
-                size_t buf_remaining = c->response->len -= c->resp_bytes_written;
+                size_t buf_remaining = c->response->len -=
+                    c->resp_bytes_written;
                 ssize_t n = send(fd, buf_start, buf_remaining, 0);
                 if (n == -1) {
                     efatal("send");
@@ -170,7 +173,6 @@ int main(int argc, char **argv) {
             }
         }
         printf("%lu clients connected.\n", clients_len);
-
     }
     return 0;
 }

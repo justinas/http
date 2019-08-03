@@ -1,13 +1,13 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "bytebuf.h"
 
 void bytebuf_grow(bytebuf *b);
 
-bytebuf* bytebuf_new() {
-    bytebuf* b = malloc(sizeof(bytebuf));
+bytebuf *bytebuf_new() {
+    bytebuf *b = malloc(sizeof(bytebuf));
     b->data = malloc(BYTEBUF_INITIAL_CAP);
     if (b->data == NULL) {
         abort();
@@ -18,7 +18,7 @@ bytebuf* bytebuf_new() {
     return b;
 }
 
-void bytebuf_append(bytebuf* b, char *cont, size_t n) {
+void bytebuf_append(bytebuf *b, char *cont, size_t n) {
     while (b->len + n > b->cap) {
         bytebuf_grow(b);
     }
