@@ -26,6 +26,7 @@ It does parse the path and headers.
 
 The server lists files in the current directory
 and lets the user download them.
+Concurrency is implemented via `select`.
 It may or may not be susceptible to path-traversal.
 
 The client lets you issue an HTTP/1.0 GET request.
