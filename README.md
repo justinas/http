@@ -7,7 +7,6 @@ An HTTP server and client, complete with a handwritten request parser.
 This code was written for a one-off university project.
 It is absolutely not battle-tested 
 and was coded to be *good enough* to pass the class.
-
 Use it for inspiration, not production.
 
 ## Usage
