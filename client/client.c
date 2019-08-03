@@ -105,8 +105,10 @@ int main(int argc, char **argv) {
         .ai_flags = 0,
     };
     struct addrinfo *addr;
-    if (getaddrinfo(host, port_str, &hints, &addr) == -1) {
-        efatal("getaddrinfo");
+
+    int err;
+    if ((err = getaddrinfo(host, port_str, &hints, &addr)) != 0) {
+        printf("getaddrinfo: %d\n", err);
     }
     if (addr == 0) {
         printf("Couldn't resolve %s\n", host);
